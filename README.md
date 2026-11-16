@@ -2,9 +2,11 @@
 
 Aplicación estática en español con tres celdas conectadas en serie, bombas peristálticas, retardos, PI, SIMC y comparación feedback/feedforward mediante IAE. Núcleos equivalentes en Python y JavaScript. **Web pública: https://flotacion-pi-methodsx.vercel.app.** Conexión HTTPS a Python local validada en Chrome y Edge con permiso de loopback. El informe académico corresponde a la fase 5.
 
-Descarga el [paquete Python para el docente](https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.0/Python_Flotacion.zip), descomprímelo y ejecuta `INICIAR_PYTHON.bat` (Windows, Python 3.11+). La URL pública exacta ya está autorizada en CORS. Consulta [la guía de entrega](docs/GUIA_ENTREGA_DOCENTE.md) y [la validación de fase 4](docs/VALIDACION_FASE4.md).
+Descarga el [paquete Python para el docente](https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.1/Python_Flotacion_v1.0.1.zip), descomprímelo y ejecuta `INICIAR_PYTHON.bat` (Windows, Python 3.11+). La URL pública exacta ya está autorizada en CORS. Consulta [la guía de entrega](docs/GUIA_ENTREGA_DOCENTE.md) y [la validación de fase 4](docs/VALIDACION_FASE4.md).
 
 Basada en Quintanilla et al., MethodsX (2023), DOI [10.1016/j.mex.2023.102081](https://doi.org/10.1016/j.mex.2023.102081). Todas las curvas propias son simuladas. No se afirma reproducir Figura 14 ni realizar ensayos físicos.
+
+Lea [LEEME_PRIMERO.txt](LEEME_PRIMERO.txt), el [manual completo](docs/GUIA_COMPLETA_DOCENTE.md) o su [versi?n HTML p?blica](https://flotacion-pi-methodsx.vercel.app/docs/GUIA_COMPLETA_DOCENTE.html). Nueve experimentos comprobados; resultados y l?mites en [validaci?n de la gu?a](docs/VALIDACION_GUIA_DOCENTE.md). El release v1.0.0 se conserva ?ntegro.
 
 ## Abrir la web localmente
 
@@ -64,7 +66,7 @@ La salida Python individual sin `--exchange` conserva el formato de fase 1. La w
 
 ## Paquete autónomo para el docente
 
-Entrega: **[entrega/Python_Flotacion.zip](entrega/Python_Flotacion.zip)**. Incluye 16 archivos, escenarios, esquema y una copia exacta del núcleo Python verificado. No contiene `.venv`, cachés, Node, secretos ni rutas específicas de esta computadora.
+Entrega: **[entrega/Python_Flotacion_v1.0.1.zip](entrega/Python_Flotacion_v1.0.1.zip)**. Incluye 22 archivos, gu?a r?pida, manual completo Markdown/HTML con capturas, escenarios, esquema y una copia exacta del núcleo Python verificado. No contiene `.venv`, cachés, Node, secretos ni rutas específicas de esta computadora.
 
 1. Descomprimir el ZIP.
 2. Abrir `INICIAR_PYTHON.bat` dentro de la carpeta descomprimida y mantener su ventana abierta.

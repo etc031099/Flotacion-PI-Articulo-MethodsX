@@ -22,3 +22,10 @@
 !docs/GUIA_CONEXION_PYTHON.md
 !docs/MODELO_MATEMATICO.md
 !docs/AUDITORIA_ARTICULO.md
+!docs/GUIA_COMPLETA_DOCENTE.md
+!docs/GUIA_COMPLETA_DOCENTE.html
+!docs/guia_docente
+/docs/guia_docente/*
+!docs/guia_docente/consigna-graficas.png
+!docs/guia_docente/python-conectado.png
+!docs/guia_docente/rebose.png

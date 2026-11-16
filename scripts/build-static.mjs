@@ -5,7 +5,8 @@ const root=resolve(import.meta.dirname,'..'),dist=join(root,'dist');
 const files=['index.html',
   ...['app.js','main.js','core.js','session.js','scenarios.js','charts.js','education.js','validation.js','python-client.js','browser-engine.js','worker.js','style.css','icon.svg'].map(f=>'web/'+f),
   'configs/paper_identified.json','configs/physical_simc.json','schemas/simulation-v1.schema.json',
-  ...['GUIA_INTERFAZ.md','API_PYTHON.md','GUIA_CONEXION_PYTHON.md','MODELO_MATEMATICO.md','AUDITORIA_ARTICULO.md'].map(f=>'docs/'+f)];
+  ...['GUIA_INTERFAZ.md','API_PYTHON.md','GUIA_CONEXION_PYTHON.md','MODELO_MATEMATICO.md','AUDITORIA_ARTICULO.md','GUIA_COMPLETA_DOCENTE.md','GUIA_COMPLETA_DOCENTE.html'].map(f=>'docs/'+f),
+  ...['consigna-graficas.png','python-conectado.png','rebose.png'].map(f=>'docs/guia_docente/'+f)];
 await mkdir(dist,{recursive:true});
 // Refuse stale files rather than deleting a computed directory recursively.
 async function inventory(directory,prefix=''){

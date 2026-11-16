@@ -2,7 +2,7 @@
 
 Web: **https://flotacion-pi-methodsx.vercel.app**.
 
-Paquete: [Python_Flotacion.zip](https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.0/Python_Flotacion.zip). Copia local: `entrega/Python_Flotacion.zip`. Código fuente: https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX.
+Paquete: [Python_Flotacion_v1.0.1.zip](https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.1/Python_Flotacion_v1.0.1.zip). Copia local: `entrega/Python_Flotacion_v1.0.1.zip`. Código fuente: https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX.
 
 ## Conectar en tres pasos
 
@@ -37,3 +37,7 @@ Importe `resultados_python.json` desde la web. Se validan y grafican las series 
 Todos los resultados propios son simulados. No son datos experimentales ni una reproducción exacta de Figura 14. Los parámetros finales del artículo, SIMC inicial, diferencias de escala, supuestos y limitaciones están documentados en `AUDITORIA_ARTICULO.md` y `MODELO_MATEMATICO.md`.
 
 Chrome y Edge 157 se probaron realmente en esta computadora; los perfiles automatizados recibieron permiso de loopback específico mediante CDP, sin flags inseguros ni túneles. No se afirma haber probado otra computadora física, Safari, Firefox ni el clic humano en el diálogo del navegador. El informe académico Word corresponde a la fase 5.
+
+## Manual definitivo de fase 6
+
+Consulte [la gu?a completa y sus nueve experimentos](GUIA_COMPLETA_DOCENTE.md) o [el manual HTML](GUIA_COMPLETA_DOCENTE.html). La distribuci?n v1.0.1 a?ade estos documentos; el modelo sigue intacto y el release v1.0.0 se conserva.

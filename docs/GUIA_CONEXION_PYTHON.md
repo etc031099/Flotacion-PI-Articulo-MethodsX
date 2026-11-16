@@ -2,11 +2,11 @@
 
 ## Para el docente: tres pasos
 
-1. **Descomprime `Python_Flotacion.zip`.** Copia la carpeta a Documentos o a otra ubicación donde puedas guardar archivos. No ejecutes el programa desde dentro del ZIP.
+1. **Descomprime `Python_Flotacion_v1.0.1.zip`.** Copia la carpeta a Documentos o a otra ubicación donde puedas guardar archivos. No ejecutes el programa desde dentro del ZIP.
 2. **Abre `INICIAR_PYTHON.bat`.** La primera vez prepara un entorno local e instala dependencias desde PyPI; necesita internet durante esa instalación. Después comprueba las versiones y no reinstala si están completas. Deja la ventana abierta.
 3. **Abre la web y pulsa “Conectar Python”.** Selecciona “Python local” y pulsa “Aplicar y calcular”. Después del cálculo, la cabecera debe mostrar **Python · API local**. No basta con ver el estado conectado.
 
-Abre **https://flotacion-pi-methodsx.vercel.app**. Descarga el [ZIP definitivo](https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.0/Python_Flotacion.zip). Su origen HTTPS exacto ya está autorizado y la conexión pública está verificada en Chrome y Edge con permiso de loopback. No necesitas el repositorio ni editar JSON para conectar.
+Abre **https://flotacion-pi-methodsx.vercel.app**. Descarga el [ZIP definitivo](https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.1/Python_Flotacion_v1.0.1.zip). Su origen HTTPS exacto ya está autorizado y la conexión pública está verificada en Chrome y Edge con permiso de loopback. No necesitas el repositorio ni editar JSON para conectar.
 
 Requisitos del paquete: Windows 10/11, Python **3.11 o posterior** (probado con 3.12), permisos de escritura y acceso a PyPI la primera vez. No necesita Node, Docker, credenciales ni el repositorio original. El núcleo matemático de consola no depende de FastAPI; el servidor sí usa las dependencias incluidas en `requirements.txt`.
 
