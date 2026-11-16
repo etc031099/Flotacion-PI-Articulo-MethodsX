@@ -1,0 +1,69 @@
+FLOTALAB — LEER PRIMERO — Distribución Python v1.0.1
+
+1. QUÉ ES
+Simulación académica del control PI de nivel de tres celdas de flotación
+conectadas en serie. Todos los valores son simulados; no hay un PLC físico.
+Referencia: Quintanilla et al. (2023), MethodsX, DOI 10.1016/j.mex.2023.102081.
+
+2. QUÉ RECIBE
+Programa Python, servidor local, iniciador Windows, dependencias fijadas,
+configuraciones, esquema JSON y manual completo. Abra
+GUIA_COMPLETA_DOCENTE.html o GUIA_COMPLETA_DOCENTE.md en esta carpeta.
+En el repositorio, el manual está dentro de docs/.
+
+3. REQUISITOS
+Windows y Python 3.11 o superior. Chrome o Edge actualizado. Internet para
+abrir Vercel y descargar dependencias la primera vez; luego la consola Python
+puede calcular sin internet. No necesita Node ni modificar código.
+
+4. USAR SOLO LA WEB
+Abra https://flotacion-pi-methodsx.vercel.app
+El motor Navegador · JavaScript funciona sin iniciar Python.
+Elija Equilibrio del banco y Comparar ambas estrategias; pulse Aplicar y
+calcular. Pulse Iniciar o Ver resultado final →. Los tres IAE deben ser cero.
+Cambie parámetros y vuelva a pulsar Aplicar y calcular para recalcular.
+
+5. INICIAR PYTHON
+Descomprima TODO el ZIP en una carpeta normal antes de ejecutar archivos.
+En una terminal, py -3 --version debe mostrar 3.11 o superior.
+Abra INICIAR_PYTHON.bat. La primera instalación necesita internet; mantenga
+abierta la ventana. Espere: Uvicorn running on http://127.0.0.1:8765
+Abra http://127.0.0.1:8765/health: debe indicar status ok y engine python.
+Un 404 en http://127.0.0.1:8765/ es normal: falta la ruta /health.
+
+6. CONECTAR LA WEB
+En Python local, confirme http://127.0.0.1:8765 y pulse Conectar Python.
+Autorice la conexión a la red local si Chrome/Edge solicita permiso.
+Elija Python local · API en Motor matemático; pulse Aplicar y calcular.
+
+7. COMPROBAR QUE CALCULA PYTHON
+La web debe indicar Python · API local. La consola debe registrar
+POST /simulate HTTP/1.1 con 200 OK (dos solicitudes si compara estrategias).
+GET /health solo comprueba disponibilidad. Cambie un parámetro y aplique:
+deben aparecer solicitudes nuevas. No basta con seleccionar Python.
+
+8. PRIMER EXPERIMENTO
+En Navegador, elija Equilibrio del banco; duración 600 s. Despliegue Eventos
+y perturbaciones; pulse + Añadir evento de consigna. Deje Consigna C1 (cm),
+instante 60 s y valor absoluto 29.5. Aplique y vaya al resultado final.
+C1 baja de 30 a 29.5 cm; C2 y C3 reciben la descarga de la celda anterior.
+El experimento 2 del manual explica las curvas y sus IAE de referencia.
+
+9. SI FALLA
+Python ausente: instale Python 3.11+ y reabra la terminal. Fallo al instalar:
+compruebe internet y vuelva a abrir el BAT. Ejecútelo desde CMD si se cierra.
+Puerto ocupado: cierre SU servidor anterior; no termine procesos desconocidos.
+Alternativa documentada: puerto 8766, cambiándolo también en la web.
+Si /health funciona pero la web no conecta, revise permiso de red local,
+dirección y origen autorizado. No desactive protecciones del navegador.
+Si sigue viendo JavaScript, seleccione Python y pulse Aplicar y calcular.
+El manual completo contiene 16 problemas frecuentes y nueve experimentos.
+
+10. FINALIZAR
+Pause la reproducción. Pulse Desconectar Python. Para seguir calculando,
+elija Navegador · JavaScript y pulse Aplicar y calcular. Detenga el servidor
+en su ventana con Ctrl+C; confirme el cierre del BAT si Windows lo solicita.
+La desconexión en la web no detiene el programa Python.
+
+El release v1.0.0 se conserva. v1.0.1 añade documentación; el modelo y la API
+siguen en versión 1.0.0. No se afirma reproducir datos experimentales originales.
