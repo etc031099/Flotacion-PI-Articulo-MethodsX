@@ -60,7 +60,7 @@ node scripts/simulate.mjs configs/paper_identified.json tmp/resultado_js.json fe
 
 La salida Python individual sin `--exchange` conserva el formato de fase 1. La web admite escenarios, resultados individuales y sobres con ambas estrategias. Valida versión, esquema, unidades y consistencia de series. Un resultado importado se etiqueta **archivo (declarado)**; no se certifica autoría sólo por metadatos.
 
-**API Python local real:** FastAPI/Uvicorn llama directamente al mismo núcleo, sin duplicar ecuaciones. GET /health informa versiones y capacidades; POST /simulate devuelve el contrato 1.0.0 y metadatos Python en cabeceras HTTP. Nunca se muestra conectado sin respuesta real compatible ni se sustituyen silenciosamente sus resultados por JS. La conexión local está probada en Chrome y Edge; HTTPS de Vercel→Python sigue NOT TESTED hasta disponer de URL pública. La alternativa por archivos sigue funcionando. Ver [docs/API_PYTHON.md](docs/API_PYTHON.md).
+**API Python local real:** FastAPI/Uvicorn llama directamente al mismo núcleo, sin duplicar ecuaciones. GET /health informa versiones y capacidades; POST /simulate devuelve el contrato 1.0.0 y metadatos Python en cabeceras HTTP. Nunca se muestra conectado sin respuesta real compatible ni se sustituyen silenciosamente sus resultados por JS. Las conexiones local y HTTPS de Vercel→Python están probadas en Chrome y Edge, con permiso de loopback para el origen público. La alternativa por archivos sigue funcionando. Ver [docs/API_PYTHON.md](docs/API_PYTHON.md).
 
 ## Paquete autónomo para el docente
 
@@ -152,6 +152,6 @@ No hay claves, Docker, base de datos ni backend remoto obligatorio. Vercel admit
 - [Validación original](docs/VALIDACION.md), [fase 2](docs/VALIDACION_FASE2.md) y [fase 3](docs/VALIDACION_FASE3.md).
 - [Guía de interfaz](docs/GUIA_INTERFAZ.md), [guía de conexión](docs/GUIA_CONEXION_PYTHON.md) y [contrato Python](docs/API_PYTHON.md).
 
-No se modelan espuma detallada, recuperación mineral, sólidos, sensores filtrados, cuantización PLC ni tanque T-1 finito. Faltan datos originales para resolver la escala de k′, los iniciales SIMC de C3 y la implementación exacta FF del experimento. La prueba visual móvil usa emulación Chrome; Safari/Firefox y dispositivos físicos siguen NOT TESTED. API Python local real: PASS. HTTPS de Vercel→loopback: NOT TESTED. No se desactivan protecciones del navegador ni se usan túneles públicos.
+No se modelan espuma detallada, recuperación mineral, sólidos, sensores filtrados, cuantización PLC ni tanque T-1 finito. Faltan datos originales para resolver la escala de k′, los iniciales SIMC de C3 y la implementación exacta FF del experimento. La prueba visual móvil usa emulación; Safari/Firefox y otra computadora física siguen NOT TESTED. API Python local y HTTPS de Vercel→loopback: PASS en Chrome y Edge con permiso explícito. El clic humano en el diálogo de permiso no fue automatizado. No se desactivan protecciones del navegador ni se usan túneles públicos.
 
 El trabajo está guardado localmente sin commits ni staging. Próxima tarea: publicar en Vercel y validar el acceso HTTPS al servicio local; después preparar el informe final con resultados, capturas y URL comprobados.

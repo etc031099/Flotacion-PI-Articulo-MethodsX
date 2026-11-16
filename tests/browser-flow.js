@@ -1,6 +1,6 @@
 // Executed with: npx playwright-cli run-code --filename tests/browser-flow.js
 async page => {
-  const passed=[];
+  const passed=[],phase=page.url().startsWith('https://')?'fase4':'dist-local';
   const check=(condition,label)=>{if(!condition)throw Error(label);passed.push(label);};
   const ready=()=>page.waitForFunction(()=>!document.getElementById('apply').disabled&&!document.getElementById('play').disabled);
   await page.setViewportSize({width:1440,height:1100});
@@ -44,10 +44,10 @@ async page => {
   check((await page.locator('#status').textContent()).includes('Conecta Python'),'Error explícito si Python no está conectado');
   check((await page.locator('#activeEngine').textContent()).includes('Python · archivo'),'El fallo no cambia el origen de los datos guardados');
   await page.locator('#engine').selectOption('javascript');await page.locator('#restore').click();await ready();await page.locator('#comparePreset').click();await ready();await page.locator('#goEnd').click();
-  await page.locator('#graficas').scrollIntoViewIfNeeded();await page.waitForFunction(()=>[...document.querySelectorAll('canvas')].every(c=>c.dataset.renderTime==='900'));await page.screenshot({path:'output/playwright/graficas-desktop.png'});
-  await page.locator('#main').scrollIntoViewIfNeeded();await page.screenshot({path:'output/playwright/dashboard-desktop.png'});
+  await page.locator('#graficas').scrollIntoViewIfNeeded();await page.waitForFunction(()=>[...document.querySelectorAll('canvas')].every(c=>c.dataset.renderTime==='900'));await page.screenshot({path:`output/playwright/${phase}-graficas-desktop.png`});
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.screenshot({path:`output/playwright/${phase}-dashboard-desktop.png`});
   await page.setViewportSize({width:390,height:844});await page.locator('#banco').scrollIntoViewIfNeeded();
   check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Sin desbordamiento horizontal en móvil');
-  await page.screenshot({path:'output/playwright/banco-movil.png'});
+  await page.screenshot({path:`output/playwright/${phase}-banco-movil.png`});
   return {passed:passed.length,failed:0,checks:passed};
 }

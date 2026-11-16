@@ -1,6 +1,6 @@
 # API Python local real · Fase 3
 
-Estado: **servidor FastAPI/Uvicorn implementado y conexión local real comprobada en Chrome y Edge**. El adaptador llama directamente a `flotation.core.simulate`, sin otra implementación de ecuaciones. El intercambio de archivos también está probado. La conexión desde Vercel HTTPS sigue **NOT TESTED**, porque no existe todavía URL pública.
+Estado: **servidor FastAPI/Uvicorn y conexión real comprobada en Chrome y Edge, localmente y desde https://flotacion-pi-methodsx.vercel.app**. El adaptador llama directamente a `flotation.core.simulate`, sin otra implementación de ecuaciones. El intercambio de archivos también está probado. Véase VALIDACION_FASE4.md para las condiciones del permiso y las evidencias.
 
 Para iniciar desde el paquete entregado, ejecutar `INICIAR_PYTHON.bat`. Para preparar el entorno de desarrollo: `python -m venv .venv-api`, instalar `requirements-api.txt` con ese intérprete y ejecutar `.venv-api/Scripts/python.exe servidor.py`. Escucha fija en `127.0.0.1:8765`; no admite `--host` ni activa reload o proxies. Consulta [GUIA_CONEXION_PYTHON.md](GUIA_CONEXION_PYTHON.md).
 
@@ -65,13 +65,13 @@ Errores: 400 JSON inválido/no finito/claves duplicadas o consulta no admitida; 
 
 Se verificaron **preflight OPTIONS y respuestas CORS reales**. Sólo se autorizan inicialmente `http://127.0.0.1:8000` y `http://localhost:8000`; las peticiones con otro Origin son rechazadas antes del cálculo. CORS usa métodos GET/POST y cabecera Content-Type explícitos, sin credenciales ni comodines. La validación de Host restringe nombres a localhost/127.0.0.1. Las solicitudes CLI sin Origin se admiten; CORS y Origin no autentican otros programas locales.
 
-Configuración: `configuracion_servidor.json` junto a `servidor.py`; `url_web=null` hasta disponer del origen HTTPS real. También se admiten `FLOTALAB_ALLOWED_ORIGINS` (arreglo JSON de orígenes exactos) y `FLOTALAB_PORT`. No se permite HTTP público, comodines, credenciales ni rutas en los orígenes. Reiniciar el servidor aplica los cambios.
+Configuración: `configuracion_servidor.json` junto a `servidor.py`; `url_web="https://flotacion-pi-methodsx.vercel.app"`. También se admiten `FLOTALAB_ALLOWED_ORIGINS` (arreglo JSON de orígenes exactos) y `FLOTALAB_PORT`. No se permite HTTP público, comodines, credenciales ni rutas en los orígenes. Reiniciar el servidor aplica los cambios.
 
-## HTTPS y red local: prueba pública pendiente
+## HTTPS y red local
 
-CORS no garantiza por sí solo acceso desde un origen HTTPS público. Los navegadores también aplican controles de contexto seguro, contenido mixto y permisos de acceso local/loopback. El cliente consulta las capacidades de permisos disponibles (`loopback-network`, y alias anterior cuando procede); si no están soportadas no supone que el permiso esté concedido. Los destinos son loopback literales. No se añaden túneles ni mecanismos para desactivar la seguridad.
+CORS no garantiza por sí solo acceso desde un origen HTTPS público. Los navegadores también aplican controles de contexto seguro, contenido mixto y permisos de acceso local/loopback. El cliente consulta `loopback-network`, evita el alias antiguo y utiliza `targetAddressSpace: "loopback"` cuando está soportado. Si el permiso no está soportado no supone que esté concedido. Los destinos son loopback literales. No se añaden túneles ni mecanismos para desactivar la seguridad.
 
-La documentación oficial de [Chrome sobre Local Network Access](https://developer.chrome.com/docs/modern-web-guidance/guides/security/local-network-access), [MDN](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Local_network_access) y [Microsoft Edge](https://learn.microsoft.com/en-us/deployedge/ms-edge-local-network-access) describe restricciones que dependen de versión, contexto y política. Se consultó el 16 de noviembre de 2026. La prueba local es PASS con Python real; Vercel HTTPS→Python es **NOT TESTED**. Después del despliegue se registrarán dominio real, navegador/versión, permiso concedido, preflight, /health, /simulate y series visualizadas.
+La documentación oficial de [Chrome sobre Local Network Access](https://developer.chrome.com/docs/modern-web-guidance/guides/security/local-network-access), [MDN](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Local_network_access) y [Microsoft Edge](https://learn.microsoft.com/en-us/deployedge/ms-edge-local-network-access) describe restricciones que dependen de versión, contexto y política. Se consultó el 16 de noviembre de 2026. La prueba pública es PASS en Chrome 157 y Edge 157 con permiso específico de loopback concedido mediante CDP en perfiles aislados de pruebas. No se automatizó el clic humano en el diálogo de permiso. Se observaron respuestas HTTP reales y se compararon series, niveles e IAE; no se interceptaron ni sustituyeron respuestas.
 
 Si el navegador rechaza la conexión, el intercambio de archivos anterior sigue disponible. No depende de CORS, certificados, apertura de puertos ni permisos de red local.
 

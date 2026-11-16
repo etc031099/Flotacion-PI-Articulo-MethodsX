@@ -114,6 +114,15 @@ class RealAPITests(unittest.TestCase):
             code, _, _ = self.request(data={"schema_version": "1.0.0", "config": self.config, "strategy": "feedback"}, origin=origin)
             self.assertEqual(code, 403)
 
+    def test_production_preflight_exact_origin_and_preview_rejected(self):
+        production = "https://flotacion-pi-methodsx.vercel.app"
+        code, headers, _ = self.request(method="OPTIONS", origin=production, headers={"Access-Control-Request-Method": "POST", "Access-Control-Request-Headers": "content-type"})
+        self.assertEqual(code, 200)
+        self.assertEqual(headers["Access-Control-Allow-Origin"], production)
+        code, headers, _ = self.request("/health", origin="https://flotacion-pi-methodsx-preview.vercel.app")
+        self.assertEqual(code, 403)
+        self.assertNotIn("Access-Control-Allow-Origin", headers)
+
     def test_rejects_foreign_preflight(self):
         code, headers, _ = self.request(method="OPTIONS", origin="https://no-autorizado.example", headers={"Access-Control-Request-Method": "POST"})
         self.assertEqual(code, 400)
