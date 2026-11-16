@@ -29,6 +29,10 @@ Las métricas completas y hashes están en [guia_docente/metricas_experimentos.j
 - Paquete externo: BAT real inicia API; dos POST reales; consola matemática devuelve exactamente el mismo objeto que la API. Importaciones e intérprete resuelven dentro de la carpeta independiente.
 - `scripts/audit_teacher_guide.py`: comprueba documentos, imágenes, índice, versiones, hashes del ZIP y descarga pública, y preservación de núcleos, ZIP anterior e informe.
 - `tests/browser-guide-document.js`: nueve experimentos presentes, tres imágenes cargadas, índice válido y ausencia de desbordamiento a 1440 y 390 px.
+- `scripts/audit_teacher_guide.py`: **52/52 comprobaciones PASS**.
+- Sitio público después del despliegue: `tests/browser-guide-public.js`, **21/21 PASS**, sin errores JavaScript ni fallos de recursos durante la carga. El enlace visible descarga el ZIP v1.0.1 con el SHA256 esperado.
+- Manual público: HTTP 200, nueve experimentos, tres capturas cargadas, índice y diseño a 1440/390 px comprobados en la URL estable de Vercel.
+- Intercambio final por archivos: escenario descargado → consola autónoma → importación web → nueva exportación. Los resultados completos coinciden exactamente con los resultados de API del experimento 7. `tests/browser-guide-import.js` verifica la procedencia **Python · archivo (declarado)**.
 - `tests/browser-guide-experiments.js`, `browser-guide-python.js`, `browser-guide-recovery.js` y `browser-guide-public.js`: recorridos mediante Playwright CLI; la herramienta se utiliza en desarrollo, no es requisito del docente.
 
 Los scripts de experimentos requieren una web abierta y disponible; el de Python usa el servidor propio en 8766 y concede permiso loopback únicamente en el perfil aislado de prueba. Para reproducir como docente se solicita el permiso normal del navegador; no se deshabilitan protecciones.
@@ -52,6 +56,11 @@ El release v1.0.0 no se sustituyó. Su ZIP conserva SHA256 `c68a64c529d9fb9f92af
 5. La revisión automática rechazó servir todo el repositorio; se usó una carpeta dedicada con solo manual HTML y tres capturas. No quedó trabajo bloqueado por esa restricción.
 6. La raíz del servidor de prueba devuelve 404 por favicon ausente; no afecta manual ni API. El manual carga las tres imágenes completas y sus enlaces internos funcionan.
 7. GitHub rechazó el identificador abreviado del commit al crear el release; se publicó correctamente con el identificador completo.
+8. Este Windows tiene `python` 3.12.10 pero no el lanzador `py`: se comprobó la alternativa `python simulacion_flotacion.py flotalab_escenario.json --output resultados_python.json --strategy compare` en la carpeta independiente. En equipos sin `py`, sustituya `py -3` por `python` después de comprobar la versión, como alternativa a instalar el lanzador. El BAT ya detecta ambas opciones.
+
+## Despliegue final comprobado
+
+Vercel **Ready**, despliegue `dpl_EXBb2fSa9r6hoUNziEFTnWNecXGf`, alias estable **https://flotacion-pi-methodsx.vercel.app**. El build contiene 27 archivos públicos; no publica Python, configuración del servidor, entornos ni secretos. Manual: **https://flotacion-pi-methodsx.vercel.app/docs/GUIA_COMPLETA_DOCENTE.html**. La descarga desde el enlace de la interfaz vuelve a producir el SHA256 registrado.
 
 ## Navegadores, límites y alcance
 
