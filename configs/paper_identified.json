@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "scenario",
+  "units": {
+    "time": "s",
+    "level": "cm",
+    "flow": "L/min",
+    "volume": "L",
+    "iae": "cm*s",
+    "area": "cm^2",
+    "kc": "L/min/cm",
+    "k_prime": "cm/s/(L/min)",
+    "kff": "1"
+  },
+  "description": "Escenario didáctico simulado; no reproduce la Figura 14.",
+  "model": "identified",
+  "tuning": "paper_final",
+  "feedforward_mode": "paper_increment",
+  "dt_s": 1,
+  "duration_s": 900,
+  "feed_lpm": 45,
+  "pump_min_lpm": 0,
+  "pump_max_lpm": 90,
+  "cells": [
+    {
+      "area_cm2": 900,
+      "height_cm": 45,
+      "initial_level_cm": 30,
+      "setpoint_cm": 30,
+      "k_prime": -0.001018,
+      "theta_s": 7,
+      "tau_c_s": 7,
+      "kc_final": -62,
+      "ti_final_s": 56,
+      "kff": 0.8
+    },
+    {
+      "area_cm2": 900,
+      "height_cm": 45,
+      "initial_level_cm": 33,
+      "setpoint_cm": 33,
+      "k_prime": -0.001018,
+      "theta_s": 6,
+      "tau_c_s": 6,
+      "kc_final": -76,
+      "ti_final_s": 30,
+      "kff": 0.8
+    },
+    {
+      "area_cm2": 900,
+      "height_cm": 45,
+      "initial_level_cm": 33,
+      "setpoint_cm": 33,
+      "k_prime": -0.001018,
+      "theta_s": 3,
+      "tau_c_s": 8,
+      "kc_final": -85,
+      "ti_final_s": 44,
+      "kff": 1.0
+    }
+  ],
+  "events": [
+    {
+      "time_s": 60,
+      "type": "setpoint",
+      "cell": 0,
+      "value": 29
+    },
+    {
+      "time_s": 180,
+      "type": "setpoint",
+      "cell": 1,
+      "value": 32
+    },
+    {
+      "time_s": 300,
+      "type": "setpoint",
+      "cell": 2,
+      "value": 32
+    },
+    {
+      "time_s": 420,
+      "type": "feed",
+      "value": 55
+    },
+    {
+      "time_s": 600,
+      "type": "feed",
+      "value": 45
+    }
+  ]
+}

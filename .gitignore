@@ -1,0 +1,17 @@
+__pycache__/
+.pytest_cache/
+tmp/
+node_modules/
+dist/
+.playwright-cli/
+.vercel/
+output/
+.venv-api/
+entrega/
+.venv/
+.env
+.env.*
+*.pem
+*.key
+
+.vercel

@@ -1,0 +1,100 @@
+FLOTALAB - PAQUETE PYTHON PARA EL DOCENTE
+Control PI de tres celdas de flotacion en serie
+
+PASO 1: Descomprima Python_Flotacion.zip en una carpeta normal, por ejemplo en Documentos.
+        No lo ejecute desde dentro del ZIP. Puede cambiar la carpeta de ubicacion.
+
+PASO 2: Haga doble clic en INICIAR_PYTHON.bat.
+        La primera vez crea una carpeta .venv e instala las dependencias.
+        Necesita internet solamente para esta instalacion desde PyPI.
+        En inicios posteriores verifica las versiones sin reinstalar si estan completas.
+        Mantenga la ventana abierta. El programa NO abre el servicio a internet.
+
+PASO 3: Abra la URL de la simulacion y pulse Conectar Python.
+        Despues elija Python local como motor y pulse Aplicar y calcular.
+        La web confirma primero /health y solicita los datos a /simulate.
+
+URL PUBLICA: https://flotacion-pi-methodsx.vercel.app
+Descarga oficial: https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.0/Python_Flotacion.zip
+El origen HTTPS exacto ya esta autorizado; no necesita editar JSON ni codigo.
+Si Chrome o Edge pide acceso a loopback/red local, permita solo este sitio
+para conectar con el programa que acaba de iniciar en su propia computadora.
+La conexion local esta autorizada desde http://127.0.0.1:8000 y http://localhost:8000.
+Este paquete no incluye el sitio web completo; funciona junto a la web entregada.
+
+REQUISITOS
+- Windows 10/11 y Python 3.11 o posterior. Recomendado y probado: Python 3.12.
+- Conexion a internet para instalar las dependencias la primera vez.
+- Permiso para escribir en la carpeta donde descomprimio el paquete.
+- No necesita Docker, credenciales, Node, MongoDB ni acceso al proyecto original.
+
+COMO SABER SI TIENE PYTHON
+Abra una terminal y escriba: py -3 --version
+Tambien puede probar: python --version
+Si no existe, instale Python desde https://www.python.org/downloads/windows/
+Seleccione Add Python to PATH y vuelva a abrir el iniciador.
+
+QUE DEBE VER
+Una direccion como http://127.0.0.1:8765 y el mensaje de Uvicorn de servidor iniciado.
+Abra http://127.0.0.1:8765/health para comprobar que responde status: ok y engine: python.
+La etiqueta de la web debe decir Python - API local despues de calcular, no solo conectado.
+
+COMO DETENERLO
+Presione Ctrl+C en la ventana del programa. Si Windows pregunta si desea terminar,
+confirme. Cerrar la ventana tambien detiene ese servicio. No cierre otras aplicaciones.
+
+SI EL PUERTO ESTA OCUPADO
+Primero cierre otra ventana de FlotaLab que ya este funcionando.
+Si necesita otro puerto, abra una terminal en esta carpeta y ejecute:
+  .venv\Scripts\python.exe servidor.py --port 8766
+En la web cambie la direccion de Python a http://127.0.0.1:8766 antes de conectar.
+El servidor sigue escuchando solo en su propia computadora.
+
+SI EL NAVEGADOR PIDE PERMISO DE RED LOCAL
+La simulacion necesita hablar con el programa que usted acaba de iniciar.
+Permita el acceso local/loopback para el sitio de la simulacion si desea usar la API.
+Si prefiere no dar permiso, use el intercambio de archivos indicado mas abajo.
+No desactive la seguridad, no cambie flags del navegador y no abra puertos del router.
+
+SI LA CONEXION ES BLOQUEADA
+1. Compruebe que la ventana Python siga abierta y que /health responda.
+2. Compruebe la direccion y el puerto en la web.
+3. Para Vercel, debe estar autorizado el origen HTTPS exacto en configuracion_servidor.json.
+   Un dominio de vista previa distinto necesita autorizacion propia. Reinicie el servidor.
+4. Revise el permiso de acceso local del sitio en el navegador.
+5. Si sigue bloqueado, use archivos. Es una alternativa completa, no requiere editar JSON.
+La prueba local no garantiza que funcionen todos los navegadores desde una web publica.
+
+ALTERNATIVA SIN CONEXION DIRECTA: ARCHIVOS
+En la web pulse Escenario para descargar el experimento aplicado.
+Copie ese archivo a esta carpeta. No cambie su contenido.
+Abra una terminal en esta carpeta y ejecute:
+  .venv\Scripts\python.exe simulacion_flotacion.py flotalab_escenario.json --output resultados_python.json --strategy compare
+Despues use Importar escenario o resultados en la web y seleccione resultados_python.json.
+La pagina mostrara las graficas y el origen Python de archivo (declarado).
+Para una sola estrategia utilice --strategy feedback o --strategy feedback_feedforward --exchange.
+Los JSON son solo archivos de comunicacion entre los entregables.
+
+SIMULACION DE EJEMPLO DESDE TERMINAL
+El nucleo matematico se puede ejecutar sin instalar la API:
+  py -3 simulacion_flotacion.py configs/paper_identified.json --output resultado.json --strategy compare
+El modelo identificado utiliza almacenamiento equivalente. El otro archivo de
+configuracion, physical_simc.json, utiliza geometria y SIMC recalculado.
+No mezcle las ganancias de ambos modelos como si fueran la misma planta.
+Todos los resultados generados son simulados; no son ensayos fisicos ni Figura 14.
+
+INSTALACION ALTERNATIVA POR COMANDOS
+Desde una terminal situada en esta carpeta:
+  py -3 -m venv .venv
+  .venv\Scripts\python.exe -m pip install -r requirements.txt
+  .venv\Scripts\python.exe servidor.py
+
+ARCHIVOS DEL PAQUETE
+servidor.py: inicia FastAPI/Uvicorn local.
+simulacion_flotacion.py: ejecuta el modelo desde terminal.
+flotation/: unico nucleo matematico y adaptador API, copiados del proyecto verificado.
+configs/: escenarios de referencia.
+schemas/: contrato de configuraciones y resultados.
+requirements.txt: versiones exactas de las dependencias verificadas.
+configuracion_servidor.json: puerto y origenes autorizados; sin claves.
+MANIFIESTO.json: lista y huellas SHA-256 de los archivos distribuidos.

@@ -1,0 +1,24 @@
+# Upload only the static build sources; Python remains a local companion.
+/*
+!index.html
+!package.json
+!package-lock.json
+!vercel.json
+!web
+!configs
+/configs/*
+!configs/paper_identified.json
+!configs/physical_simc.json
+!schemas
+/schemas/*
+!schemas/simulation-v1.schema.json
+!scripts
+/scripts/*
+!scripts/build-static.mjs
+!docs
+/docs/*
+!docs/GUIA_INTERFAZ.md
+!docs/API_PYTHON.md
+!docs/GUIA_CONEXION_PYTHON.md
+!docs/MODELO_MATEMATICO.md
+!docs/AUDITORIA_ARTICULO.md

@@ -1,0 +1,8 @@
+{
+  "puerto": 8765,
+  "origenes_permitidos": [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000"
+  ],
+  "url_web": "https://flotacion-pi-methodsx.vercel.app"
+}

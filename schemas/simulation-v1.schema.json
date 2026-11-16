@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:flotation:simulation:1.0.0",
+  "title": "Three-cell PI simulation 1.0.0",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/scenario"
+    },
+    {
+      "$ref": "#/$defs/result"
+    }
+  ],
+  "$defs": {
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "kind",
+        "units",
+        "model",
+        "tuning",
+        "feedforward_mode",
+        "dt_s",
+        "duration_s",
+        "feed_lpm",
+        "pump_min_lpm",
+        "pump_max_lpm",
+        "cells",
+        "events"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "scenario"
+        },
+        "units": {
+          "const": {
+            "time": "s",
+            "level": "cm",
+            "flow": "L/min",
+            "volume": "L",
+            "iae": "cm*s",
+            "area": "cm^2",
+            "kc": "L/min/cm",
+            "k_prime": "cm/s/(L/min)",
+            "kff": "1"
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "model": {
+          "enum": [
+            "physical",
+            "identified"
+          ]
+        },
+        "tuning": {
+          "enum": [
+            "paper_final",
+            "simc"
+          ]
+        },
+        "feedforward_mode": {
+          "enum": [
+            "paper_increment",
+            "accumulated_increment"
+          ]
+        },
+        "dt_s": {
+          "const": 1
+        },
+        "duration_s": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400
+        },
+        "feed_lpm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pump_min_lpm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pump_max_lpm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "cells": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "area_cm2",
+              "height_cm",
+              "initial_level_cm",
+              "setpoint_cm",
+              "k_prime",
+              "theta_s",
+              "tau_c_s",
+              "kc_final",
+              "ti_final_s",
+              "kff"
+            ],
+            "properties": {
+              "area_cm2": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "height_cm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "initial_level_cm": {
+                "type": "number",
+                "minimum": 0
+              },
+              "setpoint_cm": {
+                "type": "number",
+                "minimum": 0
+              },
+              "k_prime": {
+                "type": "number",
+                "exclusiveMaximum": 0
+              },
+              "theta_s": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3600
+              },
+              "tau_c_s": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "kc_final": {
+                "type": "number",
+                "exclusiveMaximum": 0
+              },
+              "ti_final_s": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "kff": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "time_s": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "type": {
+                "enum": [
+                  "feed",
+                  "setpoint"
+                ]
+              },
+              "value": {
+                "type": "number",
+                "minimum": 0
+              },
+              "cell": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2
+              }
+            },
+            "required": [
+              "time_s",
+              "type",
+              "value"
+            ],
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "setpoint"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "cell"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "kind",
+        "data_origin",
+        "units",
+        "strategy",
+        "config",
+        "storage_area_cm2",
+        "controllers",
+        "iae_cm_s",
+        "final_level_cm",
+        "series"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "result"
+        },
+        "data_origin": {
+          "const": "simulated"
+        },
+        "units": {
+          "const": {
+            "time": "s",
+            "level": "cm",
+            "flow": "L/min",
+            "volume": "L",
+            "iae": "cm*s",
+            "area": "cm^2",
+            "kc": "L/min/cm",
+            "k_prime": "cm/s/(L/min)",
+            "kff": "1"
+          }
+        },
+        "strategy": {
+          "enum": [
+            "feedback",
+            "feedback_feedforward"
+          ]
+        },
+        "config": {
+          "$ref": "#/$defs/scenario"
+        },
+        "storage_area_cm2": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "controllers": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kc",
+              "ti_s"
+            ],
+            "properties": {
+              "kc": {
+                "type": "number"
+              },
+              "ti_s": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        },
+        "iae_cm_s": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        },
+        "final_level_cm": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        },
+        "series": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "level_cm",
+              "setpoint_cm",
+              "error_cm",
+              "qin_lpm",
+              "command_lpm",
+              "qout_lpm",
+              "spill_lpm",
+              "next_level_cm",
+              "time_s",
+              "balance_residual_l",
+              "saturated"
+            ],
+            "properties": {
+              "level_cm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "setpoint_cm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "error_cm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "qin_lpm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "command_lpm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "qout_lpm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "spill_lpm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "next_level_cm": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "time_s": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "balance_residual_l": {
+                "type": "number"
+              },
+              "saturated": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

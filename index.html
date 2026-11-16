@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Laboratorio virtual de control PI de tres celdas de flotación en serie. Modelos físico e identificado, SIMC, feedforward e IAE.">
+  <meta name="theme-color" content="#0b111b">
+  <title>FlotaLab · Simulador de control PI</title>
+  <link rel="icon" type="image/svg+xml" href="web/icon.svg"><link rel="stylesheet" href="web/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al simulador</a>
+<header class="topbar">
+  <a class="brand" href="#main"><svg viewBox="0 0 36 36" aria-hidden="true"><rect x="1" y="1" width="34" height="34" rx="10" fill="#173b43"/><path d="M9 10v16h18V10M9 20c5-5 12 5 18 0M15 8v6m6-6v6" fill="none" stroke="#66e1dd" stroke-width="2"/></svg><span>Flota<span class="brand-accent">Lab</span><small>LABORATORIO DE CONTROL</small></span></a>
+  <nav aria-label="Navegación principal"><a href="#banco">Simulador</a><a href="#graficas">Gráficas</a><a href="#modelo">Modelo</a><a href="#simc">SIMC</a><a href="#python">Python local</a></nav>
+  <span class="top-tag"><span class="dot"></span> DATOS SIMULADOS</span>
+</header>
+<main id="main">
+  <div class="page-heading"><div><p class="eyebrow">INGENIERÍA DE PROCESOS / FLOTACIÓN DE MINERALES</p><h1>Control de nivel de un banco de flotación</h1><p class="muted">Tres celdas en serie. Bombas peristálticas. Un laboratorio para explorar la respuesta del control PI.</p></div><a class="paper-link" href="https://doi.org/10.1016/j.mex.2023.102081" target="_blank" rel="noreferrer">Basado en MethodsX, 2023 ↗</a></div>
+  <div class="summary-strip" aria-label="Estado del experimento"><div><span class="summary-label">PLANTA ACTIVA</span><strong id="activeModel">Identificada del artículo</strong></div><div><span class="summary-label">MOTOR DE LOS DATOS</span><strong id="activeEngine">Cargando…</strong></div><div><span class="summary-label">PASO MATEMÁTICO</span><strong>1 <small>s · fijo</small></strong></div><div><span class="summary-label">ESTADO</span><strong id="playState">Preparando</strong></div></div>
+  <div id="status" class="status-bar" role="status" aria-live="polite">Preparando el laboratorio…</div>
+  <div class="workspace">
+    <aside class="panel parameters" aria-label="Parámetros del experimento">
+      <div class="panel-title"><span class="section-num">01</span><h2>Experimento</h2><span class="tag">CONFIGURACIÓN</span></div>
+      <form id="parameters">
+        <label for="preset">Escenario</label><select id="preset"><option value="paper">Referencia · consignas escalonadas</option><option value="physical">Balance físico · SIMC recalculado</option><option value="disturbance">Perturbación de alimentación</option><option value="equilibrium">Equilibrio del banco</option></select>
+        <label for="model">Modelo de planta</label><select id="model"><option value="identified">Identificado · k′ del artículo</option><option value="physical">Físico · balance geométrico</option></select><p id="modelHint" class="field-note">Almacenamiento equivalente; no representa litros geométricos.</p>
+        <label for="mode">Estrategia de control</label><select id="mode"><option value="compare">Comparar ambas estrategias</option><option value="feedback">Solo feedback PI</option><option value="feedback_feedforward">Feedback PI + feedforward</option></select>
+        <label for="ffMode">Implementación feedforward</label><select id="ffMode"><option value="paper_increment">Literal del artículo · diferencia entre muestras</option><option value="accumulated_increment">Acumulada · variante propia</option></select><p id="ffHint" class="field-note">Ecs. (7)–(8): un escalón genera un pulso de una muestra.</p>
+        <div class="form-grid"><label>Alimentación <span class="unit">L/min</span><input id="feed" type="number" required min="0" max="90" step="any" value="45"></label><label>Duración <span class="unit">s</span><input id="duration" type="number" required min="1" max="7200" step="1" value="900"></label></div>
+        <fieldset><legend>Consignas iniciales <span class="unit">cm</span></legend><div class="triple-input" id="setpoints"></div><p class="field-note">Los cambios posteriores se definen en los eventos.</p></fieldset>
+        <details id="eventDetails"><summary>Eventos y perturbaciones <span id="eventCount" class="count">5</span></summary>
+          <div class="event-tools"><label>Instante <span class="unit">s</span><input id="distTime" type="number" min="0" step="1" value="420"></label><label>Magnitud ΔQ <span class="unit">L/min</span><input id="distDelta" type="number" step="any" value="10"></label></div>
+          <label class="check"><input id="returnEnabled" type="checkbox" checked> Retornar al caudal inicial</label><label>Instante de retorno <span class="unit">s</span><input id="returnTime" type="number" min="1" step="1" value="600"></label>
+          <button id="addDisturbance" type="button" class="button secondary wide">Aplicar escalón a los eventos</button><p class="field-note">Reemplaza eventos de alimentación; conserva los de consigna.</p>
+          <div id="eventList" class="event-list"></div><button id="addEvent" type="button" class="text-button">+ Añadir evento de consigna</button>
+        </details>
+        <details id="advanced"><summary>Parámetros avanzados</summary><label for="tuning">Sintonización</label><select id="tuning"><option value="paper_final">Ganancias explícitas · artículo o edición</option><option value="simc">SIMC calculado para la planta activa</option></select><p class="field-note">En SIMC, Kc y τi se calculan. Selecciona ganancias explícitas para editarlos.</p><div id="advancedCells"></div><p id="gainWarning" class="field-note"></p></details>
+        <button id="apply" type="submit" class="button primary wide">Aplicar y calcular</button><p id="dirtyLabel" class="field-note">Los cambios se aplican a un nuevo experimento.</p>
+      </form>
+      <div class="quick-actions"><button id="restore" class="text-button">↺ Restablecer parámetros del artículo</button><button id="distPreset" class="text-button">↗ Escenario de perturbación</button><button id="comparePreset" class="text-button">⇄ Comparación de controladores</button></div>
+    </aside>
+    <div class="simulation-column">
+      <section id="banco" class="panel process-panel">
+        <div class="panel-title"><span class="section-num">02</span><div><h2>Banco de flotación</h2><p class="field-note">Tres celdas con descarga regulada por bomba</p></div><span class="tag" id="bankTag">LISTO</span></div>
+        <div class="process-toolbar"><span id="bankModel" class="model-chip">MODELO IDENTIFICADO</span><label>Visualizar <select id="viewStrategy"><option value="feedback">Feedback PI</option><option value="feedback_feedforward">Feedback + feedforward</option></select></label></div>
+        <div class="flow-boundaries"><span><span class="dot"></span> ALIMENTACIÓN EXTERNA <strong id="externalFeed">45.00 L/min →</strong></span><span>DESCARGA FINAL <strong id="externalOut">→ 45.00 L/min</strong></span></div>
+        <div id="bank" class="bank" data-playing="false"></div>
+        <div class="process-foot"><span><i class="legend-dash"></i> Consigna</span><span><i class="legend-fill"></i> Nivel calculado</span><span id="balance">Balance de volumen…</span></div>
+        <p class="simulation-note">Espuma ilustrativa. El modelo calcula niveles y caudales; no simula la física de la espuma ni la recuperación mineral.</p>
+      </section>
+      <section class="panel playback" aria-label="Reproducción de la simulación">
+        <div class="playback-top"><div class="transport"><button id="play" class="button primary" disabled>▶ Iniciar</button><button id="pause" class="button secondary" disabled>Ⅱ Pausar</button><button id="reset" class="icon-button" aria-label="Reiniciar" title="Reiniciar reproducción" disabled>↺</button><button id="step" class="icon-button" aria-label="Avanzar un paso" title="Avanzar 1 s" disabled>▸|</button></div><div class="time-display"><strong id="elapsed">0</strong><span>/ <span id="total">900</span> s</span></div><label class="speed-label">Velocidad <select id="speed"><option value="1">×1</option><option value="5">×5</option><option value="10" selected>×10</option><option value="20">×20</option></select></label></div>
+        <label class="sr-only" for="time">Tiempo de reproducción, en segundos</label><input id="time" type="range" min="0" max="900" value="0" step="1" disabled><div class="timeline-labels"><span>0 s</span><span id="sampleNote">Estado a t=0 s · IAE hasta este instante</span><span id="timelineEnd">900 s</span></div>
+      </section>
+      <section class="panel comparison-panel" aria-label="Comparación de resultados">
+        <div class="panel-title"><span class="section-num">03</span><div><h2>Desempeño del control</h2><p class="field-note">IAE acumulado hasta el tiempo visualizado · cm·s</p></div><button id="goEnd" class="button small secondary">Ver resultado final →</button></div>
+        <div class="table-scroll"><table><thead><tr><th>Celda</th><th>Feedback PI</th><th>PI + feedforward</th><th>Reducción IAE</th><th>Menor error</th></tr></thead><tbody id="comparison"></tbody></table></div><p id="comparisonNote" class="simulation-note">Mismo escenario externo y horizonte; las entradas de C2 y C3 dependen del control anterior.</p>
+      </section>
+    </div>
+  </div>
+  <section id="graficas" class="chart-section">
+    <div class="section-heading"><div><p class="eyebrow">RESPUESTA DINÁMICA</p><h2>Las señales detrás del proceso</h2><p class="muted">Datos del motor activo. Continua: PI; discontinua: PI + feedforward.</p></div><div class="cell-tabs" role="group" aria-label="Celda de las gráficas"><button data-cell="0" aria-pressed="true">C1</button><button data-cell="1" aria-pressed="false">C2</button><button data-cell="2" aria-pressed="false">C3</button></div></div>
+    <div id="chartGrid" class="chart-grid"></div><p class="field-note">Cursor, toque o flechas con foco en la gráfica: consulta muestras reales. Las curvas se revelan hasta el tiempo reproducido; la velocidad no cambia la integración.</p>
+  </section>
+  <section id="archivos" class="panel exchange-section">
+    <div class="section-heading"><div><p class="eyebrow">INTERCAMBIO CON EL DOCENTE</p><h2>Escenarios y resultados portátiles</h2><p class="muted">Continúa en Python o recupera un experimento sin editar archivos a mano.</p></div><span class="tag">JSON · VERSIÓN 1.0.0</span></div>
+    <div class="exchange-grid"><div><h3>Guardar este experimento</h3><p>El escenario contiene los parámetros aplicados. Los resultados incluyen las series completas y el motor declarado de origen.</p><div class="button-row"><button id="exportConfig" class="button secondary">↓ Escenario</button><button id="exportResult" class="button secondary">↓ Resultados</button></div></div><div><h3>Importar desde un archivo</h3><label for="rawOrigin">Para resultados antiguos sin metadatos, declarar origen:</label><select id="rawOrigin"><option value="python">Python · declarado por quien importa</option><option value="javascript">JavaScript · declarado por quien importa</option></select><label class="file-button button secondary">↑ Importar escenario o resultados<input id="import" type="file" accept=".json,application/json"></label><p id="importInfo" class="field-note">Se validan versión, estructura, unidades y consistencia numérica.</p></div></div>
+  </section>
+  <section id="python" class="panel python-section">
+    <div class="section-heading"><div><p class="eyebrow">DOS FORMAS DE CALCULAR</p><h2>Motor matemático: navegador / Python local</h2></div><span class="connection-state" id="connectionState"><span class="dot offline"></span> Sin conexión Python</span></div>
+    <div class="engine-grid"><div><label for="engine">Motor para el próximo cálculo</label><select id="engine"><option value="javascript">Navegador · JavaScript</option><option value="python">Python local · API</option></select><label for="pythonUrl">Dirección del servicio local</label><input id="pythonUrl" type="url" value="http://127.0.0.1:8765" spellcheck="false"><div class="button-row"><button id="connect" class="button secondary">Conectar Python</button><button id="disconnect" class="button secondary">Desconectar Python</button></div><p id="connectionMessage" class="field-note">El navegador funciona sin instalar Python.</p><p id="networkAccess" class="field-note">La conexión se inicia sólo al pulsar Conectar Python.</p></div><div class="python-guide"><h3>Cómo conectar Python en 3 pasos</h3><ol><li><a href="https://github.com/etc031099/Flotacion-PI-Articulo-MethodsX/releases/download/v1.0.0/Python_Flotacion.zip">Descarga Python_Flotacion.zip</a> y descomprímelo en una carpeta normal. Requiere Windows y Python 3.11 o posterior.</li><li>Ejecuta <strong>INICIAR_PYTHON.bat</strong> y deja su ventana abierta. La primera instalación necesita internet.</li><li>Abre <a href="https://flotacion-pi-methodsx.vercel.app">esta web de Vercel</a>, pulsa <strong>Conectar Python</strong> y permite el acceso a loopback/red local para este sitio si se solicita. Selecciona <strong>Python local</strong> y pulsa <strong>Aplicar y calcular</strong>.</li></ol><p><a href="docs/GUIA_CONEXION_PYTHON.md">Guía de conexión y solución de problemas</a>. Conexión pública verificada en Chrome y Edge con permiso de loopback. Las series proceden de Python real. Alternativa: <a href="#archivos">intercambiar archivos</a>.</p></div></div>
+  </section>
+  <section id="modelo" class="education-section">
+    <div class="section-heading"><div><p class="eyebrow">FUNDAMENTO DEL LABORATORIO</p><h2>¿Cómo funciona el modelo matemático?</h2><p class="muted">Más descarga reduce el nivel. El PI regula esa descarga; feedforward incorpora la alimentación medida.</p></div><a href="docs/MODELO_MATEMATICO.md" class="text-link">Documentación ↗</a></div>
+    <div class="scale-callout"><span class="callout-symbol">≈18.19×</span><div><h3>Dos modelos, dos escalas de respuesta</h3><p>Con A=900 cm², k′ físico=−0.01851852 cm/s por (L/min). Tabla 2: k′=−0.001018. Su área equivalente es 16371.97 cm²: almacenamiento virtual, no geometría real. Las dinámicas de ambos modelos no se superponen.</p><strong id="educationActive">Planta activa: identificada del artículo.</strong></div></div>
+    <div id="equations" class="equation-grid"></div>
+    <div class="panel explanation"><h3>Por qué el signo de Kc es negativo</h3><p>Si h supera la consigna, e=r−h es negativo. Con Kc negativo, aumenta la orden de descarga. Después del retardo aumenta el caudal saliente y disminuye el nivel. El actuador es una bomba peristáltica, no una válvula dependiente de la altura.</p><p><strong>Supuestos:</strong> líquido incompresible, área constante, medición ideal y alimentación externa impuesta. No se modelan T-1 finito, concentrado ordinario, gas variable ni sólidos.</p></div>
+  </section>
+  <section id="simc" class="panel simc-section">
+    <div class="section-heading"><div><p class="eyebrow">DEL MODELO AL CONTROLADOR</p><h2>¿Cómo se sintonizaron los controladores?</h2><p class="muted">SIMC aporta el punto de partida; el artículo reajusta los parámetros mediante ensayos.</p></div></div>
+    <div class="simc-formulas"><div><span>GANANCIA PROPORCIONAL</span><code>Kc = 1 / [k′(τc + θ)]</code></div><div><span>TIEMPO INTEGRAL</span><code>τi = min{τ1, 4(τc + θ)}</code></div><div><span>LÍMITE INTEGRADOR</span><code>τ1 → ∞ ⇒ τi = 4(τc + θ)</code></div></div><p class="field-note">Ecs. (2)–(3), p. 8. τc ≥ θ. Kc en (L/min)/cm; θ, τc y τi en segundos.</p>
+    <div class="table-scroll"><table class="simc-table"><thead><tr><th>Parámetro / procedencia</th><th>C1</th><th>C2</th><th>C3</th></tr></thead><tbody id="simcTable"></tbody></table></div>
+    <div class="explanation-grid"><p><strong>Kc:</strong> intensidad de la corrección. Mayor |Kc| responde con más caudal y puede favorecer oscilaciones.</p><p><strong>τi:</strong> rapidez integral. Reducirlo acumula corrección más deprisa y puede reducir robustez.</p><p><strong>θ y τc:</strong> demora y tiempo deseado del lazo. Aumentar τc reduce la agresividad de SIMC.</p><p><strong>Kff:</strong> fracción del cambio de alimentación añadida a la descarga. No elimina el retardo.</p></div>
+    <p class="scientific-note">Discrepancia conservada: C3 da Kc≈−89.302 y τi=44 s con los parámetros impresos, frente a los iniciales reportados −78.1 y 52 s. Los finales −85 y 44 s son ajustes experimentales. <a href="docs/AUDITORIA_ARTICULO.md">Ver auditoría.</a></p>
+  </section>
+  <section id="articulo" class="panel article-section">
+    <div class="section-heading"><div><p class="eyebrow">TRAZABILIDAD CIENTÍFICA</p><h2>Comparación con el artículo científico</h2></div><span class="tag">SIMULACIÓN ≠ ENSAYO FÍSICO</span></div>
+    <div class="article-grid"><div><h3>Experimento publicado</h3><p>Quintanilla et al., MethodsX (2023). Figura 14, p. 13. IAE en cm·s.</p><table><thead><tr><th>Estrategia</th><th>C1</th><th>C2</th><th>C3</th></tr></thead><tbody><tr><td>Feedback</td><td>198</td><td>325</td><td>260</td></tr><tr><td>Feedback + FF</td><td>164</td><td>187</td><td>221</td></tr></tbody></table><p class="field-note">El texto describe 900 s por ensayo; la figura muestra 600 s. El segmento exacto de las etiquetas IAE no está disponible.</p></div><div><h3>Nuestro modelo</h3><p id="articleResult">Calculando resultados propios…</p><p>No se fabrican curvas para aparentar coincidencia. Feedforward puede mejorar o empeorar el IAE. Faltan datos originales y código MATLAB para reproducir consignas, filtrado e implementación FF. No realizamos ensayos físicos.</p></div></div>
+    <p class="field-note">Fuente: <a href="https://doi.org/10.1016/j.mex.2023.102081" target="_blank" rel="noreferrer">DOI 10.1016/j.mex.2023.102081</a>. FF acumulado: <strong>Variante experimental de implementación propia</strong>.</p>
+  </section>
+  <footer><a class="brand" href="#main">Flota<span class="brand-accent">Lab</span></a><span>Proyecto académico · Control PI de nivel · Modelos deterministas</span><a href="docs/GUIA_INTERFAZ.md">Guía de demostración ↗</a></footer>
+</main>
+<noscript>Activa JavaScript para ejecutar el simulador. Los archivos Python se ejecutan independientemente.</noscript>
+<script type="module" src="web/main.js"></script>
+</body></html>
